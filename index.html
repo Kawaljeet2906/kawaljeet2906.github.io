@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MarketPulse — Indian Stock Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">▲</span>
+      <span class="logo-text">MarketPulse</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="dashboard">
+        <span class="nav-icon">◈</span><span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-section="stocks">
+        <span class="nav-icon">◉</span><span>Top 50 Stocks</span>
+      </a>
+      <a href="#" class="nav-item" data-section="portfolio">
+        <span class="nav-icon">◎</span><span>Portfolio</span>
+      </a>
+      <a href="#" class="nav-item" data-section="watchlist">
+        <span class="nav-icon">◇</span><span>Watchlist</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <span id="themeIcon">☀</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE TOP BAR -->
+  <header class="mobile-header">
+    <button class="hamburger" id="hamburger">☰</button>
+    <span class="logo-text">MarketPulse</span>
+    <button class="theme-toggle-mobile" id="themeToggleMobile"><span id="themeIconMobile">☀</span></button>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- ========== DASHBOARD ========== -->
+    <section class="section active" id="section-dashboard">
+      <div class="section-header">
+        <h1 class="section-title">Market Overview</h1>
+        <span class="live-badge">● LIVE</span>
+      </div>
+
+      <!-- Index Cards -->
+      <div class="index-cards">
+        <div class="index-card" id="card-nifty">
+          <div class="index-meta">
+            <span class="index-name">NIFTY 50</span>
+            <span class="index-tag">NSE</span>
+          </div>
+          <div class="index-price" id="nifty-price">22,147.90</div>
+          <div class="index-change positive" id="nifty-change">▲ 142.35 (0.65%)</div>
+          <canvas class="mini-chart" id="chart-nifty" height="60"></canvas>
+        </div>
+        <div class="index-card" id="card-sensex">
+          <div class="index-meta">
+            <span class="index-name">SENSEX</span>
+            <span class="index-tag">BSE</span>
+          </div>
+          <div class="index-price" id="sensex-price">73,088.33</div>
+          <div class="index-change positive" id="sensex-change">▲ 398.12 (0.55%)</div>
+          <canvas class="mini-chart" id="chart-sensex" height="60"></canvas>
+        </div>
+        <div class="index-card" id="card-banknifty">
+          <div class="index-meta">
+            <span class="index-name">BANK NIFTY</span>
+            <span class="index-tag">NSE</span>
+          </div>
+          <div class="index-price" id="banknifty-price">47,321.55</div>
+          <div class="index-change negative" id="banknifty-change">▼ 213.80 (0.45%)</div>
+          <canvas class="mini-chart" id="chart-banknifty" height="60"></canvas>
+        </div>
+      </div>
+
+      <!-- Index Trend Chart -->
+      <div class="card chart-card">
+        <div class="card-header">
+          <h2>Index Trend — Today</h2>
+          <div class="chart-legend">
+            <span class="leg-dot" style="background:#00d4aa"></span>NIFTY 50
+            <span class="leg-dot" style="background:#ff6b6b;margin-left:12px"></span>SENSEX
+            <span class="leg-dot" style="background:#ffa94d;margin-left:12px"></span>BANK NIFTY
+          </div>
+        </div>
+        <canvas id="trendChart" height="100"></canvas>
+      </div>
+
+      <!-- Quick Movers -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><h2>Top Gainers</h2></div>
+          <div class="mover-list" id="topGainers"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h2>Top Losers</h2></div>
+          <div class="mover-list" id="topLosers"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TOP 50 STOCKS ========== -->
+    <section class="section" id="section-stocks">
+      <div class="section-header">
+        <h1 class="section-title">Top 50 Stocks</h1>
+        <input type="text" class="search-bar" id="stockSearch" placeholder="Search company or symbol…" />
+      </div>
+      <div class="stocks-grid" id="stocksGrid"></div>
+    </section>
+
+    <!-- ========== PORTFOLIO ========== -->
+    <section class="section" id="section-portfolio">
+      <div class="section-header">
+        <h1 class="section-title">Portfolio Tracker</h1>
+      </div>
+
+      <div class="portfolio-stats" id="portfolioStats">
+        <div class="stat-card">
+          <span class="stat-label">Invested</span>
+          <span class="stat-value" id="totalInvested">₹0.00</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Current Value</span>
+          <span class="stat-value" id="currentValue">₹0.00</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">P&amp;L</span>
+          <span class="stat-value" id="pnlValue">₹0.00</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Returns</span>
+          <span class="stat-value" id="returnsPercent">0.00%</span>
+        </div>
+      </div>
+
+      <div class="portfolio-body">
+        <!-- Add Stock Form -->
+        <div class="card add-stock-card">
+          <div class="card-header"><h2>Add Stock</h2></div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Company Name</label>
+              <input type="text" id="pName" placeholder="e.g. Reliance Industries" />
+            </div>
+            <div class="form-group">
+              <label>Symbol</label>
+              <input type="text" id="pSymbol" placeholder="e.g. RELIANCE" />
+            </div>
+            <div class="form-group">
+              <label>Buy Price (₹)</label>
+              <input type="number" id="pBuyPrice" placeholder="e.g. 2450.00" />
+            </div>
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="number" id="pQty" placeholder="e.g. 10" />
+            </div>
+            <div class="form-group">
+              <label>Current Price (₹)</label>
+              <input type="number" id="pCurrPrice" placeholder="e.g. 2600.00" />
+            </div>
+          </div>
+          <button class="btn-primary" id="addStockBtn">+ Add to Portfolio</button>
+        </div>
+
+        <div class="portfolio-right">
+          <!-- Pie Chart -->
+          <div class="card chart-card-sm">
+            <div class="card-header"><h2>Allocation</h2></div>
+            <canvas id="pieChart" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Holdings Table -->
+      <div class="card" id="holdingsCard" style="margin-top:24px">
+        <div class="card-header"><h2>Holdings</h2></div>
+        <div class="table-wrap">
+          <table class="holdings-table" id="holdingsTable">
+            <thead>
+              <tr>
+                <th>Stock</th>
+                <th>Qty</th>
+                <th>Buy Price</th>
+                <th>Curr. Price</th>
+                <th>Invested</th>
+                <th>Value</th>
+                <th>P&amp;L</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="holdingsTbody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="holdingsEmpty">
+          <span>No holdings yet. Add your first stock above.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== WATCHLIST ========== -->
+    <section class="section" id="section-watchlist">
+      <div class="section-header">
+        <h1 class="section-title">Watchlist</h1>
+        <input type="text" class="search-bar" id="watchSearch" placeholder="Search to add stock…" />
+      </div>
+      <div class="watch-suggestions" id="watchSuggestions"></div>
+      <div class="stocks-grid" id="watchlistGrid"></div>
+      <div class="empty-state" id="watchlistEmpty">
+        <span>Your watchlist is empty. Search above to add stocks.</span>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
